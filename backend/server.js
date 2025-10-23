@@ -18,16 +18,21 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage});
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Este tipo de arquivo não é aceito. Apenas PNG, JPG e JPEG são permitidos.'));
+  }
+};
+
+const upload = multer({ storage, fileFilter});
 
 import fs from "fs";
 if(!fs.existsSync("uploads")){
     fs.mkdirSync("uploads");
 }
-
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", message: "Server is running" });
-});
 
 app.post("/upload", upload.single("image"), (req, res) => {
     if(!req.file){
@@ -39,6 +44,10 @@ app.post("/upload", upload.single("image"), (req, res) => {
         filename: req.file.filename,
         path: req.file.path
     });
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", message: "Server is running" });
 });
 
 const PORT = process.env.PORT || 5000;
