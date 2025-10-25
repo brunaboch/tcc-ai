@@ -34,7 +34,7 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const allowed = ["image/png", "image/jpeg", "image/jpg"];
     if (!allowed.includes(file.mimetype)) {
-      return cb(new Error("Tipo de arquivo inválido. Envie PNG ou JPG."));
+      return cb(new Error("Tipo de arquivo inválido. Envie PNG, JPG ou JPEG."));
     }
     cb(null, true);
   },
@@ -59,10 +59,10 @@ router.post("/", upload.single("image"), async (req, res) => {
     let systemPrompt;
     switch (promptType) {
       case "estudante":
-        systemPrompt = "Descreva e explique este diagrama conceitual de banco de dados, incluindo a explicação das representações visuais das entidades apresentadas na imagem, seus atributos e relacionamentos. Foque na interpretação do diagrama da imagem exclusivamente, não sendo necessário explicar o que é um diagrama conceitual de banco de dados. Use uma linguagem simples para que uma pessoa que não tem muito conhecimento sobrebanco de dados e/ou possui deficiência visual consiga entender";
+        systemPrompt = "Descreva e explique este diagrama conceitual de banco de dados, incluindo a explicação das representações visuais das entidades apresentadas na imagem, seus atributos e relacionamentos. Foque na interpretação do diagrama da imagem exclusivamente, não sendo necessário explicar o que é um diagrama conceitual de banco de dados. Use uma linguagem simples para que uma pessoa que não tem muito conhecimento sobrebanco de dados e/ou possui deficiência visual consiga entender.Não cloque nenhuma palavra em negrito ou itálico, de forma que o resultado saia com algum caracter especial escondido de forma que prejudique a leitura pelo leitor de tela.";
         break;
       case "profissional":
-        systemPrompt = "Descreva e explique este diagrama conceitual de banco de dados. Foque na interpretação do diagrama da imagem exclusivamente, não sendo necessário explicar o que é um diagrama conceitual de banco de dados. Use uma linguagem técnica, própria para a área de banco de dados, voltada a um público com experiência na área e/ou deficiência visual";
+        systemPrompt = "Descreva e explique este diagrama conceitual de banco de dados. Foque na interpretação do diagrama da imagem exclusivamente, não sendo necessário explicar o que é um diagrama conceitual de banco de dados. Use uma linguagem técnica, própria para a área de banco de dados, voltada a um público com experiência na área e/ou deficiência visual. Não use # e * na resposta. Não coloque palavras em negrito.";
         break;
       default:
         systemPrompt = "Descreva o diagrama conceitual de banco de dados na imagem.";
